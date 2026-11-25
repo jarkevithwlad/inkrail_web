@@ -1,0 +1,266 @@
+.ink-desk__shell {
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  background: #1a1c1b;
+  --desktop-color: #1a1c1b;
+  --paper-color: #eeecd9;
+  --maker-mark: url("./assets/maker-mark.png");
+  --rail-y: 150px;
+  --carriage-x: 78px;
+  color: #9c9e8e;
+}
+.ink-desk__shell[data-finish="walnut"] { --desktop-color: #3d332b; }
+.ink-desk__shell[data-finish="oak"] { --desktop-color: #72614b; }
+.ink-desk__shell[data-finish="felt"] { --desktop-color: #28332e; }
+.ink-desk__shell[data-finish="linen"] { --desktop-color: #38362f; }
+.ink-desk__shell[data-finish="leather"] { --desktop-color: #3b2b20; }
+.ink-desk__shell [hidden] { display: none !important; }
+
+.ink-desk__table, .ink-desk__material, .ink-desk__pools {
+  position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
+}
+.ink-desk__table {
+  background: var(--desktop-color);
+  isolation: isolate;
+}
+.ink-desk__table::before {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: radial-gradient(circle at center, rgb(59 60 48/.18) 100px, transparent 700px);
+}
+.ink-desk__shell:not([data-finish="charcoal"]) .ink-desk__table::before {
+  background: radial-gradient(circle at center, rgb(59 60 48/.18) 100px, transparent 700px),
+    linear-gradient(var(--desk-light-angle,145deg), rgb(255 255 255/.025), transparent, rgb(0 0 0/.16));
+}
+.ink-desk__shell[data-paired="true"] .ink-desk__table { --desk-light-angle: 180deg; }
+.ink-desk__shell[data-night="true"]:not([data-finish="charcoal"]) .ink-desk__table::before {
+  box-shadow: inset 0 0 0 150vmax rgb(0 0 0/.16);
+}
+.ink-desk__table::after {
+  content: ""; position: absolute; inset: 0; z-index: 3;
+}
+.ink-desk__shell[data-finish="leather"] .ink-desk__table::after {
+  background: radial-gradient(ellipse at center, transparent 27%, rgb(0 0 0/.32) 92%);
+}
+.ink-desk__pools { mix-blend-mode: color-dodge; z-index: 2; }
+.ink-desk__shell[data-finish="leather"] .ink-desk__material { mix-blend-mode: soft-light; z-index: 3; opacity: .264; }
+.ink-desk__lamp, .ink-desk__foot, .ink-desk__accent { position: absolute; pointer-events: none; }
+.ink-desk__lamp { z-index: 5; }
+.ink-desk__lamp--right { transform: scaleX(-1); }
+.ink-desk__lamp > img, .ink-desk__lamp > i {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill;
+}
+.ink-desk__lamp > i {
+  display: block; background: var(--lamp-color);
+  opacity: var(--lamp-alpha); mask-repeat: no-repeat; mask-size: 100% 100%;
+}
+.ink-desk__lamp { filter: drop-shadow(0 2px 2px rgb(0 0 0/.34)); }
+.ink-desk__foot { width: 104px; height: 36px; z-index: 4; transform: translate(-50%,-32%) scale(var(--foot-scale)); }
+.ink-desk__foot::before,.ink-desk__foot::after {
+  content: ""; position: absolute; left: 15px; top: 4px; width: 74px; height: 22px;
+  background: rgb(0 0 0/.62); border-radius: 50%; filter: blur(1.8px);
+}
+.ink-desk__foot::before {
+  width: 90px; height: 29px; transform: translate(-24px,7px); background: rgb(0 0 0/.5); filter: blur(8px);
+}
+.ink-desk__foot--right::before { transform: translate(8px,7px); }
+.ink-desk__accent { z-index: 4; width: 126px; height: 206px; transform: translate(-50%,-50%); filter: drop-shadow(1px 2px 2px rgb(0 0 0/.32)); }
+.ink-desk__accent[data-kind="paperclip"] { transform: translate(-50%,-50%) rotate(19deg); }
+.ink-desk__accent[data-kind="sprig"] { transform: translate(-50%,-50%) rotate(-13deg); }
+.ink-desk__accent[data-kind="envelope"] { transform: translate(-50%,-50%) rotate(-9deg); }
+.ink-desk__shell[data-night="true"] .ink-desk__accent { opacity: .79; }
+
+.ink-desk__header,.ink-desk__footer,.ink-desk__paper {
+  position: relative; width: var(--paper-width); margin-inline: auto;
+}
+.ink-desk__header {
+  height: 58px; width: max(0px, calc(var(--paper-width) - 12px));
+  display: flex; align-items: center; gap: 5px;
+}
+.ink-desk__paper {
+  height: var(--paper-height);
+}
+/* Give independently composited layers the same clip as their parent. An
+   outer-only clip can leak a bright rectangular tile above the paper curl
+   after wide Focus changes the backing texture size in Chromium/WebView2. */
+.ink-desk__sheet, .ink-desk__substrate, .ink-desk__grain, .ink-desk__curl, .ink-desk__veil { clip-path: var(--paper-outline); }
+.ink-desk__sheet {
+  position: absolute; inset: 0; isolation: isolate;
+  overflow: hidden;
+}
+.ink-desk__paper::before {
+  content: ""; position: absolute; inset: 14px 4px 0;
+  background: rgb(0 0 0/.46); border-radius: 22px 22px 3px 3px;
+  filter: blur(25px); transform: translateY(14px);
+}
+.ink-desk__footer {
+  height: 48px; display: flex; align-items: center; justify-content: center; gap: 8px;
+  color: rgb(150 154 136/.65); font: 10px "Courier New", monospace;
+}
+.ink-desk__substrate {
+  position: absolute; inset: 0; isolation: isolate; pointer-events: none;
+  background: linear-gradient(140deg, rgb(255 255 255/.05), rgb(255 255 255/.22) 43%, rgb(145 135 102/.08)), var(--paper-color);
+}
+.ink-desk__grain,.ink-desk__curl,.ink-desk__lip,.ink-desk__margin-art,.ink-desk__edge-light,.ink-desk__lamp-tint,.ink-desk__veil {
+  position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
+}
+.ink-desk__curl {
+  background:
+    linear-gradient(90deg,rgb(0 0 0/.12),rgb(255 255 255/.07),transparent) left top/28px 100% no-repeat,
+    linear-gradient(90deg,transparent,rgb(255 255 255/.05),rgb(0 0 0/.11)) right top/28px 100% no-repeat,
+    linear-gradient(180deg,rgb(117 109 84/.18),rgb(255 255 255/.28) 12%,rgb(255 255 255/.12) 38%,transparent)
+      left var(--curl-offset,0px)/100% var(--curl-shade-height) no-repeat;
+}
+.ink-desk__shell[data-curved="false"] .ink-desk__curl,
+.ink-desk__shell[data-curved="false"] .ink-desk__lip { display: none; }
+.ink-desk__lip { overflow: visible; transform: translateY(.7px); filter: blur(.5px); }
+.ink-desk__lip > path { fill: none; stroke: rgb(255 255 255/.46); stroke-width: 1; }
+.ink-desk__emboss { position: absolute; width: 96px; height: 96px; pointer-events: none; }
+/* Broad letterfaces retain the grain, with a shadow and a narrow catching edge. */
+.ink-desk__seal-face {
+  fill: rgb(100 90 68 / .32);
+  mask: var(--maker-mark) center / 66px auto no-repeat;
+}
+.ink-desk__seal-shadow,.ink-desk__seal-highlight {
+  mask-image: var(--maker-mark), var(--maker-mark);
+  mask-position: var(--edge-position), center;
+  mask-size: 66px auto;
+  mask-repeat: no-repeat;
+  mask-composite: subtract;
+}
+.ink-desk__seal-shadow { fill: rgb(75 68 52 / .9); --edge-position: calc(50% - .7px) calc(50% - .9px); }
+.ink-desk__seal-highlight { fill: rgb(255 252 237 / .95); --edge-position: calc(50% + .72px) calc(50% + 1px); }
+.ink-desk__edge-light { mix-blend-mode: screen; }
+.ink-desk__lamp-tint { mix-blend-mode: multiply; }
+.ink-desk__surface { position: absolute; left: 0; top: 0; width: 100%; height: var(--editor-height); }
+.ink-desk__veil { z-index: 3; }
+.ink-desk__controls {
+  position: absolute; z-index: 8; left: min(30px,4%); right: min(30px,4%); bottom: 18px;
+  min-height: 34px; display: flex; align-items: center; gap: 4px;
+  color: #363b32;
+}
+.ink-desk__shell[data-night="true"] .ink-desk__controls { color: #b8baaa; }
+.ink-desk__header,.ink-desk__footer,.ink-desk__controls { transition: opacity .12s ease-out; }
+.ink-desk__shell[data-focus="true"] :is(.ink-desk__header,.ink-desk__footer):not(:hover):not(:focus-within) { opacity: .12; }
+.ink-desk__shell[data-focus="true"] .ink-desk__controls:not(:hover):not(:focus-within) { opacity: .06; }
+
+.ink-desk__rail {
+  --rail-fill: #252b29,#a5aaa1,#6a746d,#27322e,#151c19;
+  position: absolute; left: -2px; right: -2px; top: var(--rail-y);
+  height: 17px; transform: translateY(-50%); border-radius: 10px;
+  pointer-events: none; z-index: 4;
+  background: linear-gradient(var(--rail-fill)); box-shadow: 0 6px 8px rgb(0 0 0/.26);
+}
+.ink-desk__rail[data-finish="brass"] { --rail-fill: #514532,#cebb84,#aa915d,#5b4b2e,#30291c; }
+.ink-desk__rail[data-finish="charcoal"] { --rail-fill: #1e2221,#59605b,#343b36,#161d19; }
+.ink-desk__rail::before,.ink-desk__rail::after {
+  content: ""; position: absolute; left: 17px; right: 17px; top: 4px; height: 1px;
+  background: rgb(255 255 255/.25);
+}
+.ink-desk__rail:not([data-style="classic"])::after { top: 11px; background: rgb(0 0 0/.35); }
+.ink-desk__rail[data-style="classic"]::after { display: none; }
+.ink-desk__rail > i {
+  position: absolute; top: -4px; width: 16px; height: 25px; display: block;
+  border-radius: 3px; background: linear-gradient(90deg,#60665d,#282e29,#121713);
+  box-shadow: inset 0 0 0 .6px rgb(255 255 255/.1);
+}
+.ink-desk__rail:not([data-style="classic"]) > i::after {
+  position: absolute; content: ""; left: 7px; top: 4px; bottom: 5px; width: 1px;
+  background: var(--trim); opacity: .75;
+}
+.ink-desk__rail > i:last-child { right: 0; }
+/* The rail overhangs the sheet by 2px on each side. */
+.ink-desk__margin-stops { position: absolute; inset: -1px 2px; }
+.ink-desk__margin-stops::before, .ink-desk__margin-stops::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 6px; border-radius: 1.4px;
+  background: linear-gradient(#b6a27b, #d9c9a4 24%, #a38c62 58%, #776344);
+  box-shadow: inset 0 0 0 .6px rgb(54 45 30 / .6), inset 1.5px 0 0 rgb(255 255 255 / .33);
+}
+.ink-desk__margin-stops::before { left: var(--ink-margins); transform: translateX(-50%); }
+.ink-desk__margin-stops::after { right: var(--ink-margins); transform: translateX(50%); }
+[data-preview-mode="machine"] .ink-desk__margin-stops { display: none; }
+.ink-desk__shell[data-night="true"] .ink-desk__rail { filter: brightness(.48); }
+.ink-desk__capsule {
+  position: absolute; z-index: 5; left: var(--carriage-x); top: var(--rail-y);
+  box-sizing: border-box; margin: 0; padding: 0; border: 0;
+  background: none; outline-offset: 3px; border-radius: var(--capsule-radius);
+  width: 110px; height: 46px; transform: translate(-50%,-50%);
+  touch-action: manipulation; cursor: pointer;
+  transition: left 75ms cubic-bezier(.22,.7,.32,1);
+}
+.ink-desk__shell[data-roll="true"] .ink-desk__capsule { transition-duration: 45ms; }
+.ink-desk__capsule::before {
+  content: ""; position: absolute; display: block; width: 100px; height: 12px; left: 5px; top: 43px;
+  border-radius: 50%; background: rgb(0 0 0/.28); filter: blur(6px);
+}
+.ink-desk__housing {
+  position: absolute; inset: 0; display: block; box-sizing: border-box;
+  border-radius: var(--capsule-radius); background: var(--capsule-material);
+  box-shadow: inset 0 0 0 .8px rgb(52 59 48/.26), 0 4px 6px rgb(0 0 0/.28);
+  overflow: hidden;
+}
+.ink-desk__housing::before {
+  content: ""; position: absolute; left: 18px; right: 18px; top: 5px; height: 2px;
+  border-radius: 8px; background: rgb(255 255 255/.35); filter: blur(1px);
+}
+.ink-desk__housing::after {
+  position: absolute; content: ""; left: 36px; right: 36px; top: 15px; bottom: 13px;
+  border-radius: 4px; box-shadow: inset 0 0 0 .7px rgb(255 255 255/.28), 0 1px 2px rgb(0 0 0/.20);
+  background: linear-gradient(180deg,rgb(0 0 0/.18),transparent 55%,rgb(255 255 255/.12)),var(--trim);
+}
+.ink-desk__capsule[data-style="classic"] .ink-desk__housing {
+  background: linear-gradient(rgb(255 255 255/.5),rgb(255 255 255/.06) 30%,transparent 52%,rgb(0 0 0/.13) 83%,rgb(0 0 0/.25)),var(--capsule-fill);
+}
+.ink-desk__capsule[data-style="classic"] .ink-desk__housing::after { display:none; }
+.ink-desk__housing > i {
+  position: absolute; z-index: 1; top: 21px; left: 45px; width: 4px; height: 4px; border-radius: 50%;
+  background: #8ba474; box-shadow: inset 0 1px .6px rgb(255 255 255/.15);
+}
+.ink-desk__housing > i:nth-child(2) { left: 53px; background: #916d5d; }
+.ink-desk__housing > i:nth-child(3) { left: 61px; background: #51564a; }
+.ink-desk__capsule[data-style="classic"] .ink-desk__housing > i:nth-child(1) { left: 16px; }
+.ink-desk__capsule[data-style="classic"] .ink-desk__housing > i:nth-child(2) { left: 27px; }
+.ink-desk__capsule[data-style="classic"] .ink-desk__housing > i:nth-child(3) { left: 38px; }
+.ink-desk__capsule-art { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ink-desk__engraving rect { mask: var(--maker-mark) center / contain no-repeat fill-box; }
+.ink-desk__capsule:not([data-style="classic"]) .ink-desk__housing :is(i) { display: none; }
+.ink-desk__capsule:not([data-style="classic"]) .ink-desk__housing::before,
+.ink-desk__capsule:not([data-style="classic"]) .ink-desk__housing::after { display: none; }
+.ink-desk__hammer {
+  position: absolute; left: calc(50% - 2.5px); top: -23px; display: block; width: 5px; height: 30px;
+  border-radius: 1px; background: linear-gradient(90deg,#313b32,#8a9080,#252e28);
+  transition: transform 65ms ease-out;
+}
+.ink-desk__hammer::before {
+  content: ""; position: absolute; width: 23px; height: 5px; left: -9px; top: -2px;
+  border-radius: 1px; background: linear-gradient(#919582,#2a332c); box-shadow: 0 2px 2px rgb(0 0 0/.22);
+}
+.ink-desk__capsule--strike .ink-desk__hammer { transform: translateY(-4px); }
+.ink-desk__emitter {
+  display: none; position: absolute; top: 0; left: calc(50% - 11px); width: 22px; height: 3px;
+  background: var(--lamp-color); opacity: var(--lamp-alpha); border-radius: 2px; filter: blur(1px);
+  box-shadow: 0 0 8px var(--lamp-color);
+}
+.ink-desk__shell[data-night="true"] .ink-desk__emitter { display: block; }
+.ink-desk__shell[data-night="true"] .ink-desk__housing > i:first-child {
+  background: #b9cf7d; box-shadow: 0 0 5px #b9cf7d;
+}
+
+.ink-desk__preview {
+  position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: none;
+}
+.ink-desk__shell--preview :is(.ink-desk__header,.ink-desk__footer,.ink-desk__controls) { display: none; }
+.ink-desk__shell--preview[data-preview-mode="desk"] .ink-desk__paper { margin-top: 26px; }
+.ink-desk__shell--preview:not([data-preview-mode="desk"]) .ink-desk__paper { width: 100%; }
+.ink-desk__shell--preview[data-preview-mode="machine"] { --desktop-color: #eeecd9; }
+.ink-desk__shell--preview[data-preview-mode="machine"] .ink-desk__substrate { background: #eeecd9; }
+.ink-desk__lamp-sample {
+  position: absolute; left: 55%; top: 35%; transform: translate(-50%,-50%);
+  white-space: pre-line; font: 14px/1.42 "Courier New", monospace; color: #383932;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ink-desk__shell *, .ink-desk__shell *::before, .ink-desk__shell *::after { transition: none !important; }
+  .ink-desk__capsule--strike .ink-desk__hammer { transform: none; }
+}

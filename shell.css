@@ -1,0 +1,61 @@
+*{box-sizing:border-box}html,body,#desk{width:100%;height:100%;margin:0;overflow:hidden}
+body{font:14px "Segoe UI",system-ui,sans-serif;background:#1b1d1b;color:#2d302d}
+button{color:inherit;font:inherit}button:focus-visible,[role=menuitem]:focus-visible{outline:2px solid #758968;outline-offset:2px}
+#boot-message{position:fixed;inset:35% 2rem auto;text-align:center;color:#cacbb8;font-family:"Courier New",monospace;pointer-events:none}
+#app-update{position:fixed;z-index:90;right:12px;bottom:12px;max-width:calc(100% - 24px);display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;background:#efeede;color:#353a32;border:1px solid #aaa993;border-radius:8px;box-shadow:0 4px 16px #0005}
+#app-update[hidden]{display:none}
+#app-reload{padding:4px 9px;border:0;border-radius:4px;background:#5b6853;color:white;cursor:pointer}
+.s-head,.s-tools,.s-foot{display:flex;align-items:center;width:100%;position:relative;min-width:0}
+.s-head{gap:5px;color:#999c8d;height:100%}.s-tools{gap:4px;color:#737668;height:100%}
+.s-tools.night{color:rgba(245,242,220,.57)}.s-flex{flex:1;min-width:0}
+.s-brand,.s-count,.s-date,.s-foot{font-family:"Courier New",monospace}
+.s-brand {
+  position:absolute;left:50%;transform:translateX(-50%);pointer-events:none;
+  display:inline-flex;align-items:center;gap:8px;
+  color:#b4b6a5;font-size:10px;font-weight:bold;letter-spacing:2.7px;
+}
+.s-brand::before {
+  content:"";width:22px;aspect-ratio:6 / 5;background:#bcac84;
+  mask:var(--maker-mark) center / contain no-repeat;
+}
+.s-count{font-size:11px;letter-spacing:1.4px}.s-dot{width:4px;height:4px;border-radius:50%;background:#7d8b69;margin-left:8px}.s-dot.dirty{background:#bca677}
+.s-btn{display:inline-grid;place-items:center;border:0;background:transparent;cursor:pointer;padding:0;width:29px;height:28px;border-radius:6px;color:inherit;line-height:1;font-size:13px}
+.s-btn svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.s-btn:hover,.s-btn[aria-pressed=true]{background:#9b9c8524;color:#484f3f}.s-tools.night .s-btn:hover,.s-head .s-btn:hover,.s-tools.night .s-btn[aria-pressed=true]{color:#edeede}
+.s-format{width:25px}.s-date{font-size:9px;letter-spacing:1.1px;opacity:.69}.s-divider{width:7px}
+.s-foot{font-size:10px;justify-content:center;color:#969a88aa;gap:8px}.s-foot.error{color:#e4b594}
+#commands{position:fixed;z-index:100;min-width:223px;padding:5px;background:#f2f0e5;color:#383c35;border:1px solid #8d9181;border-radius:9px;box-shadow:0 10px 30px #0006}
+#commands[hidden],#commands [hidden],#boot-message[hidden]{display:none}#commands button{border:0;width:100%;display:flex;justify-content:space-between;gap:16px;text-align:left;padding:7px 10px;border-radius:4px;background:none;cursor:pointer;font:13px "Segoe UI",sans-serif}
+#commands button:hover,#commands button:focus{background:#dbe1d2;outline:none}#commands small {opacity:.62}#commands hr{border:0;border-top:1px solid #aaad9d77;margin:3px 5px}
+#notice{position:fixed;max-width:min(480px,90vw);max-height:70vh;overflow:auto;border:1px solid #aaa993;border-radius:12px;background:#efeede;padding:26px;color:#353a32;box-shadow:0 12px 40px #0005}
+#notice::backdrop{background:#17201868}#notice h2{font:21px "Courier New",monospace;margin:0 0 .6em}#notice p{white-space:pre-wrap;overflow-wrap:anywhere}#notice button{float:right;border:0;border-radius:5px;background:#5b6853;color:white;padding:6px 16px;cursor:pointer}
+@media(max-width:690px){.s-date{font-size:8px;letter-spacing:.3px}.s-btn{width:26px}.s-format{width:22px}}
+
+@media screen and (max-width:600px){
+  .s-date,.s-divider{display:none}
+  .s-tools{justify-content:space-between;gap:1px}
+  .s-tools .s-flex{display:none}
+  .s-btn{min-height:32px;width:clamp(23px,8vw,39px)}
+  #commands{max-width:calc(100vw - 8px);max-height:calc(100dvh - 8px);overflow:auto}
+}
+@media screen and (max-height:440px){
+  #desk .ink-desk__header{height:40px}
+  #desk .ink-desk__footer{height:34px}
+  #desk .ink-desk__controls{bottom:7px}
+}
+
+/* The browser paginates the daylight snapshot and repeats the stock. */
+#letter-print{position:fixed;left:-100000px;top:0;visibility:hidden;pointer-events:none;--maker-mark:url("./assets/maker-mark.png")}
+#letter-print .ink-desk__substrate,.ink-print-ornaments{height:var(--sheet-height);width:100%;inset:0}
+.ink-print-ornaments{position:absolute;overflow:hidden}
+.ink-print-writing{position:relative;padding:68px 0 28px;box-decoration-break:clone}
+#letter-print .ink-editor{min-height:0}
+#letter-print .ink-editor-sealed,#letter-print .ink-editor-sealed .ink-line:last-child{break-after:avoid}
+#letter-print .ink-seal-footer{break-inside:avoid}
+@media print{
+  @page{margin:0}
+  html,body{height:auto;overflow:visible;margin:0;background:transparent}
+  #app-update,body:has(> #letter-print) > :not(#letter-print){display:none!important}
+  #letter-print{position:static;visibility:visible;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  #letter-print .ink-desk__substrate{position:fixed}
+}

@@ -1,0 +1,43 @@
+Inkrail typewriter recordings
+
+The six presets use separate recordings. Each set of three letter keys is
+cut from three different strikes on the same machine. The recordists
+released these sounds under CC0 1.0 Universal.
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Classic — Hermes Precisa 305
+Joseph SARDIN, BigSoundBank. “Typewriter #2” provides the three keys and
+the carriage return. “Typewriter, space” and “Typewriter, Bell #1” provide
+the space bar and margin bell.
+https://bigsoundbank.com/typewriter-2-s2835.html
+https://bigsoundbank.com/typewriter-space-s2843.html
+https://bigsoundbank.com/typewriter-bell-s2844.html
+
+Soft — Hermes 3000
+supersupernator, “supersuper_Typewriter.wav”. Three keys and the bell,
+with high frequencies gently rolled off for quieter writing.
+https://freesound.org/people/supersupernator/sounds/519622/
+
+Royal — Royal Quiet De Luxe
+videog, “Typing on a typewriter”. Three keys, the margin bell and the
+following carriage return.
+https://freesound.org/people/videog/sounds/240839/
+
+Vintage — 1930s manual typewriter
+monotraum, “old typewriter.wav”. Three keys and the hand-operated return.
+https://freesound.org/people/monotraum/sounds/434027/
+
+Portable — Hermes Baby
+evsecrets, “Typing on a typewriter with ding at end of each line.wav”.
+Three keys, the bell and the carriage slide and stop.
+https://freesound.org/people/evsecrets/sounds/334458/
+
+Electric — IBM Selectric II
+secretmojo, “Typewriter, IBM Selectric II”. Three powered print cycles.
+The recordist describes this machine's bell as broken. Inkrail supplies
+its own margin bell and powered return.
+https://freesound.org/people/secretmojo/sounds/224012/
+
+Inkrail trimmed the recordings, mixed them to mono, filtered background
+noise, adjusted levels and faded the cuts. The other 15 sounds are original
+designs for the individual machines.
