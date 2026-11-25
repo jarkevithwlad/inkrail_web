@@ -508,8 +508,15 @@ export function mountEditor(surface, {onChange=()=>{}, onMove=()=>{}, onSound=()
   }
   function cursor(at=selection[1], flat=false) {
     if(!rendered.length) return null;
-    const [p,o]=findPoint(at), r=document.createRange();
-    r.setStart(p,o);r.collapse(true);
+    let p,o;
+    if(composing) {
+      // The browser owns the marked text until compositionend. The logical
+      // selection still points at the start of the original replacement.
+      const native=getSelection();
+      if(!native?.focusNode||!node.contains(native.focusNode)) return null;
+      p=native.focusNode;o=native.focusOffset;
+    } else [p,o]=findPoint(at);
+    const r=document.createRange();r.setStart(p,o);r.collapse(true);
     let rect=r.getBoundingClientRect();
     // An empty paragraph's collapsed range has no bounds in Chromium. The
     // break itself has the font's native caret height, just like typed text.
@@ -537,7 +544,7 @@ export function mountEditor(surface, {onChange=()=>{}, onMove=()=>{}, onSound=()
     const seal = !flat && sealFooter.firstElementChild?.getBoundingClientRect();
     const sealBottom = seal && seal.top < v.bottom && seal.bottom > v.top ? Math.min(h, seal.bottom - v.top) : null;
     return {x:c.left-v.left, y:caretBottom, caretX:c.left-v.left, caretY:top, caretBottom, lineTop:top,
-      lineHeight:c.height, scrollOffset:scroller.scrollTop, hasText:!!text, visible:caretBottom>=0&&caretBottom<=h+4,
+      lineHeight:c.height, scrollOffset:scroller.scrollTop, hasText:!!(text||compositionSnapshot?.preview), visible:caretBottom>=0&&caretBottom<=h+4,
       startPosition:bottom()?'bottom':'top',
       sealBottom,
       followingTextBottom:!bottom()&&(selection[1]<text.length||caretBottom>h)?Math.min(h,(node.lastElementChild?.getBoundingClientRect().bottom??c.bottom)-v.top):null};
@@ -660,9 +667,8 @@ export function mountEditor(surface, {onChange=()=>{}, onMove=()=>{}, onSound=()
   function scheduleMove() { if(!frame) frame=requestAnimationFrame(()=>{frame=0;publish();}); }
   function cancelFeed() { if(feed) cancelAnimationFrame(feed);feed=0; }
   function follow(animate=false,oldTop=scroller.scrollTop) {
-    if(composing) return;
-    // A resized roller split must be remeasured before reading the flat
-    // caret; otherwise old visual rows can wrap a second time during reflow.
+    // Remeasure resized roller rows before reading the flat caret. During
+    // composition projectVisibleLines leaves the browser's marked DOM alone.
     projectVisibleLines();
     const g=geometry(true);
     if(!g) return;
@@ -881,7 +887,7 @@ export function mountEditor(surface, {onChange=()=>{}, onMove=()=>{}, onSound=()
     replace(value.text,null,value.style,false,null,value.endings);
   }
   function watchSelection() {
-    if(composing) return;
+    if(composing) {scheduleMove();return;}
     const current=readSelection();
     if(!current)return;
     if(current[0]!==selection[0]||current[1]!==selection[1]) {
@@ -913,24 +919,33 @@ export function mountEditor(surface, {onChange=()=>{}, onMove=()=>{}, onSound=()
   function finishComposition(value) {
     if(!composing)return;
     composing=false;pendingNativeCommit=null;
-    const {selection: original, caret, offset} = compositionSnapshot;
+    const {selection: original, caret, offset, preview} = compositionSnapshot;
     selection=original;compositionSnapshot=null;
     const [a,b]=ordered();
-    if(!value){render(true);publish();return;}
+    if(!value){render(true);follow();return;}
     // Commit only the established input text over the original logical
     // selection. Never infer edits from provisional DOM or visual breaks.
     history(null);replaceRange(a,b,normalizeNewline(value));
-    commit(true,scroller.scrollTop,true);onSound('key');
+    commit(true,scroller.scrollTop,true);
+    if(value!==preview)onSound(value.endsWith(' ')?'space':'key');
     finishTypingStroke(value, a, a === b, caret, offset);
   }
   node.addEventListener('compositionstart',()=>{
     if(composing)return;
     selection=readSelection()||selection;
-    compositionSnapshot={selection:[...selection], caret:geometry(true), offset:scroller.scrollTop};composing=true;setPlaceholder(null);cancelFeed();
+    compositionSnapshot={selection:[...selection], caret:geometry(true), offset:scroller.scrollTop, preview:null};
+    composing=true;setPlaceholder(null);cancelFeed();
   },options);
   node.addEventListener('compositionend',e=>finishComposition(e.data??''),options);
-  node.addEventListener('input',()=>{
-    if(pendingNativeCommit!==null)finishComposition(pendingNativeCommit);
+  node.addEventListener('input',e=>{
+    if(pendingNativeCommit!==null){finishComposition(pendingNativeCommit);return;}
+    if(!composing||(!e.isComposing&&e.inputType!=='insertCompositionText'&&e.inputType!=='deleteCompositionText'))return;
+    // Mobile keyboards can keep a whole word marked until Space. Follow
+    // each provisional edit without saving it or interrupting the IME.
+    const previous=compositionSnapshot.preview, value=e.data??'';
+    compositionSnapshot.preview=value;
+    follow();
+    if(value!==previous)onSound(!value?'erase':value.endsWith(' ')?'space':'key');
   },options);
   document.addEventListener('selectionchange',watchSelection,options);
   scroller.addEventListener('scroll',scheduleMove,options);

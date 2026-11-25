@@ -1,7 +1,7 @@
 // Bump this revision whenever a deployed app file changes. The whole desk is
 // cached together; letters and preferences live separately in IndexedDB.
 const prefix = `inkrail-web:${self.registration.scope}:`;
-const version = `${prefix}v4`;
+const version = `${prefix}v5`;
 const files = [
   './index.html', './ru.js', './startup.js', './app.js', './bridge.js', './storage.js', './audio.js',
   './defaults.js', './desk.js', './editor.js', './margin-bell.js', './markdown.js',
